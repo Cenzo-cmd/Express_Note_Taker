@@ -28,11 +28,16 @@ app.get('*', (req, res) => {
 
 app.post('/api/notes', (req, res) => {
     let noteArray = [];
-    let newNote = req.body;
+    let newNote = {
+        id: uuidv4(),
+        ...req.body
+    };
+
     fs.readFile(__dirname + "/db/db.json", "utf-8", (err, data) => {
         if (err) throw err;
         noteArray = JSON.parse(data);
         noteArray.push(newNote);
+        console.log(noteArray);
 
         fs.writeFile(__dirname + "/db/db.json", JSON.stringify(noteArray), 'utf-8', err => {
             if (err) throw err;
