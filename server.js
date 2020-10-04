@@ -37,7 +37,6 @@ app.post('/api/notes', (req, res) => {
         if (err) throw err;
         noteArray = JSON.parse(data);
         noteArray.push(newNote);
-        console.log(noteArray);
 
         fs.writeFile(__dirname + "/db/db.json", JSON.stringify(noteArray), 'utf-8', err => {
             if (err) throw err;
@@ -46,8 +45,19 @@ app.post('/api/notes', (req, res) => {
     });
 });
 
+app.delete('/api/notes/:id', (req, res) => {
+    let noteId = req.params.id;
+    // console.log('this is the notes id', noteId);
+    fs.readFile(__dirname + '/db/db.json', (err, data) => {
+        let dbFiles = JSON.parse(data);
+        const filteredNotes = dbFiles.filter(values => values.id != noteId);
 
-
+        fs.writeFile(__dirname + '/db/db.json', JSON.stringify(filteredNotes), 'utf-8', err => {
+            if (err) throw err;
+            res.end();
+        });
+    });
+});
 
 app.listen(PORT, () => {
     console.log('We are listening on http://localhost:' + PORT);
